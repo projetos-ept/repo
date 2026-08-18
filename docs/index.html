@@ -1,0 +1,140 @@
+<!doctype html>
+  <html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="description" content="Repositório público de documentos e materiais para download.">
+    <meta name="theme-color" content="#155eef">
+    <title>Repositório de Arquivos</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles.css">
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("repo-theme") ||
+        (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  </script>
+      <script src="./config.js" defer></script>
+      <script src="./app.js" defer></script>
+    </head>
+    <body>
+      <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+      <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+      <header class="site-header">
+        <a class="brand" href="#/" aria-label="Página inicial">
+          <span class="brand-mark" aria-hidden="true">▰</span>
+          <span><strong id="site-name">Repositório</strong><small id="site-subtitle">Documentos e materiais</small></span>
+    </a>
+    <nav class="header-actions" aria-label="Ações">
+      <span id="network-status" class="network-status"><i></i><span>Online</span></span>
+          <button id="theme-button" class="icon-button" type="button" aria-label="Alternar tema" title="Alternar tema">☾</button>
+      <a id="admin-link" class="button button-ghost" href="#/admin">🔒 Administração</a>
+        </nav>
+      </header>
+
+      <main id="conteudo">
+        <section id="public-view">
+          <div class="hero">
+            <div class="hero-inner">
+              <p class="eyebrow">Biblioteca digital</p>
+              <h1>Encontre o material que você precisa.</h1>
+              <p>Documentos organizados por categoria, disponíveis para consulta e download.</p>
+              <form id="search-form" class="search" role="search">
+                <span aria-hidden="true">⌕</span>
+                <input id="search-input" type="search" placeholder="Buscar por título, descrição ou arquivo..." autocomplete="off">
+                <button class="button button-primary" type="submit">Buscar</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="page-shell public-layout">
+            <aside class="categories-panel" aria-label="Categorias">
+              <div class="panel-title"><span>Categorias</span><button id="clear-filters" type="button" class="text-button">Limpar</button></div>
+              <div id="categories" class="category-list"><div class="skeleton line"></div><div class="skeleton line"></div></div>
+            </aside>
+
+            <section class="catalog">
+              <div class="section-heading">
+                <div><p class="eyebrow">Conteúdo público</p><h2 id="catalog-title">Todos os arquivos</h2></div>
+            <span id="result-count" class="count-pill">Carregando…</span>
+              </div>
+              <div id="offline-note" class="notice" hidden>Você está vendo a última lista salva neste dispositivo.</div>
+              <div id="file-grid" class="file-grid" aria-live="polite">
+                <article class="file-card skeleton-card"></article><article class="file-card skeleton-card"></article><article class="file-card skeleton-card"></article>
+              </div>
+              <div id="empty-state" class="empty-state" hidden><span>⌕</span><h3>Nenhum arquivo encontrado</h3><p>Tente alterar a busca ou escolher outra categoria.</p></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="admin-view" class="admin-view" hidden>
+          <div class="admin-shell">
+            <div class="admin-heading">
+              <div><p class="eyebrow">Área protegida</p><h1>Painel administrativo</h1><p>Envie, organize e publique os arquivos do repositório.</p></div>
+              <div class="admin-actions"><button id="print-report" class="button button-ghost" type="button">🖨 Relatório</button><button id="logout-button" class="button button-danger" type="button">Sair</button></div>
+            </div>
+
+            <div id="admin-content" hidden>
+              <section id="stats" class="stats-grid" aria-label="Resumo"></section>
+
+              <div class="admin-grid">
+                <section class="panel upload-panel">
+                  <div class="panel-heading"><div><h2>Novo arquivo</h2><p>O envio começa como rascunho, salvo se você escolher publicar.</p></div></div>
+              <form id="upload-form">
+                <label class="drop-zone" id="drop-zone">
+                  <input id="file-input" name="file" type="file" required accept=".pdf,.zip,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.odp,.rtf,.csv,.txt,.png,.jpg,.jpeg,.webp">
+                      <span class="drop-icon">⇧</span><strong>Selecione ou arraste um arquivo</strong><small>PDF, ZIP, Office, OpenDocument, texto e imagens — até 50 MB</small>
+                      <em id="selected-file">Nenhum arquivo selecionado</em>
+                </label>
+                <div class="form-grid">
+                  <label>Título<input name="title" maxlength="160" placeholder="Preenchido pelo nome do arquivo"></label>
+                      <label>Categoria<select id="upload-category" name="category_id" required></select></label>
+                    </div>
+                    <label>Descrição<textarea name="description" rows="3" maxlength="1000" placeholder="Breve descrição do material"></textarea></label>
+                    <label>Visibilidade<select name="visibility"><option value="draft">Rascunho</option><option value="public">Publicado</option><option value="private">Privado</option></select></label>
+                    <div id="upload-progress" class="progress" hidden><span></span></div>
+                    <button class="button button-primary" type="submit">Enviar arquivo</button>
+                  </form>
+                </section>
+
+                <section class="panel category-panel">
+                  <div class="panel-heading"><div><h2>Categorias</h2><p>Organize os materiais exibidos ao público.</p></div></div>
+              <form id="category-form" class="inline-form"><input name="name" maxlength="80" required placeholder="Nova categoria"><button class="button button-primary" type="submit">Adicionar</button></form>
+                  <div id="admin-categories" class="admin-category-list"></div>
+                </section>
+              </div>
+
+              <section class="panel files-panel">
+                <div class="panel-heading">
+                  <div><h2>Arquivos cadastrados</h2><p>Altere a publicação ou remova arquivos.</p></div>
+              <select id="admin-file-filter" aria-label="Filtrar arquivos"><option value="">Todos</option><option value="public">Publicados</option><option value="draft">Rascunhos</option><option value="private">Privados</option></select>
+                </div>
+                <div class="table-scroll"><table><thead><tr><th>Arquivo</th><th>Categoria</th><th>Status</th><th>Tamanho</th><th>Downloads</th><th>Ações</th></tr></thead><tbody id="admin-files"></tbody></table></div>
+              </section>
+            </div>
+
+            <section id="login-card" class="login-card panel">
+              <div class="login-icon">🔐</div><h2>Entrar na administração</h2><p>Use as credenciais configuradas com segurança no Cloudflare Worker.</p>
+              <form id="login-form"><label>E-mail<input name="email" type="email" autocomplete="username" required></label><label>Senha<input name="password" type="password" autocomplete="current-password" required></label><button class="button button-primary button-wide" type="submit">Entrar</button></form>
+              <a href="#/" class="text-link">← Voltar ao repositório público</a>
+            </section>
+          </div>
+        </section>
+      </main>
+
+      <footer><span id="footer-name">Repositório</span><span>Disponibilização pública de documentos</span></footer>
+
+      <dialog id="edit-dialog">
+        <form id="edit-form" method="dialog">
+          <div class="dialog-heading"><h2>Editar arquivo</h2><button class="icon-button" value="cancel" aria-label="Fechar">×</button></div>
+          <input name="id" type="hidden">
+          <label>Título<input name="title" required maxlength="160"></label>
+          <label>Descrição<textarea name="description" rows="4" maxlength="1000"></textarea></label>
+          <label>Categoria<select name="category_id" required></select></label>
+          <label>Visibilidade<select name="visibility"><option value="draft">Rascunho</option><option value="public">Publicado</option><option value="private">Privado</option></select></label>
+          <div class="dialog-actions"><button class="button button-ghost" value="cancel">Cancelar</button><button id="save-edit" class="button button-primary" value="default">Salvar alterações</button></div>
+        </form>
+      </dialog>
+    </body>
+    </html>
+    
