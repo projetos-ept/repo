@@ -56,7 +56,14 @@
             <section class="catalog">
               <div class="section-heading">
                 <div><p class="eyebrow">Conteúdo público</p><h2 id="catalog-title">Todos os arquivos</h2></div>
-            <span id="result-count" class="count-pill">Carregando…</span>
+            <div class="heading-controls">
+              <label class="sort-control">Ordenar<select id="sort-select" aria-label="Ordenar arquivos">
+                <option value="recent">Mais recentes</option>
+                <option value="downloads">Mais baixados</option>
+                <option value="az">A–Z</option>
+              </select></label>
+              <span id="result-count" class="count-pill">Carregando…</span>
+            </div>
               </div>
               <div id="offline-note" class="notice" hidden>Você está vendo a última lista salva neste dispositivo.</div>
               <div id="file-grid" class="file-grid" aria-live="polite">
