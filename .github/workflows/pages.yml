@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Baixar repositório
         uses: actions/checkout@v4
-            - name: Configurar Pages
+      - name: Configurar Pages
         uses: actions/configure-pages@v5
       - name: Preparar site
         uses: actions/upload-pages-artifact@v3
