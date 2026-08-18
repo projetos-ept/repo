@@ -1,5 +1,40 @@
 (() => {
     "use strict";
+    const ICONS = {
+        pdf: { cls: "ico-pdf", path: '<path d="M5.523 12.424q.21-.124.459-.238a8 8 0 0 1-.45.606c-.28.337-.498.516-.635.572l-.035.012a.3.3 0 0 1-.026-.044c-.056-.11-.054-.216.04-.36.106-.165.319-.354.647-.548m2.455-1.647q-.178.037-.356.078a21 21 0 0 0 .5-1.05 12 12 0 0 0 .51.858q-.326.048-.654.114m2.525.939a4 4 0 0 1-.435-.41q.344.007.612.054c.317.057.466.147.518.209a.1.1 0 0 1 .026.064.44.44 0 0 1-.06.2.3.3 0 0 1-.094.124.1.1 0 0 1-.069.015c-.09-.003-.258-.066-.498-.256M8.278 6.97c-.04.244-.108.524-.2.829a5 5 0 0 1-.089-.346c-.076-.353-.087-.63-.046-.822.038-.177.11-.248.196-.283a.5.5 0 0 1 .145-.04c.013.03.028.092.032.198q.008.183-.038.465z"/><path fill-rule="evenodd" d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2zM4.165 13.668c.09.18.23.343.438.419.207.075.412.04.58-.03.318-.13.635-.436.926-.786.333-.401.683-.927 1.021-1.51a11.7 11.7 0 0 1 1.997-.406c.3.383.61.713.91.95.28.22.603.403.934.417a.86.86 0 0 0 .51-.138c.155-.101.27-.247.354-.416.09-.181.145-.37.138-.563a.84.84 0 0 0-.2-.518c-.226-.27-.596-.4-.96-.465a5.8 5.8 0 0 0-1.335-.05 11 11 0 0 1-.98-1.686c.25-.66.437-1.284.52-1.794.036-.218.055-.426.048-.614a1.24 1.24 0 0 0-.127-.538.7.7 0 0 0-.477-.365c-.202-.043-.41 0-.601.077-.377.15-.576.47-.651.823-.073.34-.04.736.046 1.136.088.406.238.848.43 1.295a20 20 0 0 1-1.062 2.227 7.7 7.7 0 0 0-1.482.645c-.37.22-.699.48-.897.787-.21.326-.275.714-.08 1.103"/>' },
+        word: { cls: "ico-word", path: '<path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M5.485 6.879l1.036 4.144.997-3.655a.5.5 0 0 1 .964 0l.997 3.655 1.036-4.144a.5.5 0 0 1 .97.242l-1.5 6a.5.5 0 0 1-.967.01L8 9.402l-1.018 3.73a.5.5 0 0 1-.967-.01l-1.5-6a.5.5 0 1 1 .97-.242z"/>' },
+        excel: { cls: "ico-excel", path: '<path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M5.884 6.68 8 9.219l2.116-2.54a.5.5 0 1 1 .768.641L8.651 10l2.233 2.68a.5.5 0 0 1-.768.64L8 10.781l-2.116 2.54a.5.5 0 0 1-.768-.641L7.349 10 5.116 7.32a.5.5 0 1 1 .768-.64"/>' },
+        sheet: { cls: "ico-excel", path: '<path d="M6 12v-2h3v2z"/><path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M3 9h10v1h-3v2h3v1h-3v2H9v-2H6v2H5v-2H3v-1h2v-2H3z"/>' },
+        ppt: { cls: "ico-ppt", path: '<path d="M8.188 10H7V6.5h1.188a1.75 1.75 0 1 1 0 3.5"/><path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2zM7 5.5a1 1 0 0 0-1 1V13a.5.5 0 0 0 1 0v-2h1.188a2.75 2.75 0 0 0 0-5.5z"/>' },
+        zip: { cls: "ico-zip", path: '<path d="M5.5 9.438V8.5h1v.938a1 1 0 0 0 .03.243l.4 1.598-.93.62-.93-.62.4-1.598a1 1 0 0 0 .03-.243"/><path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1m-4-.5V2h-1V1H6v1h1v1H6v1h1v1H6v1h1v1H5.5V6h-1V5h1V4h-1V3zm0 4.5h1a1 1 0 0 1 1 1v.938l.4 1.599a1 1 0 0 1-.416 1.074l-.93.62a1 1 0 0 1-1.109 0l-.93-.62a1 1 0 0 1-.415-1.074l.4-1.599V8.5a1 1 0 0 1 1-1"/>' },
+        image: { cls: "ico-image", path: '<path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707v5.586l-2.73-2.73a1 1 0 0 0-1.52.127l-1.889 2.644-1.769-1.062a1 1 0 0 0-1.222.15L2 12.292V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2zm-1.498 4a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/><path d="M10.564 8.27 14 11.708V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-.293l3.578-3.577 2.56 1.536 2.426-3.395z"/>' },
+        text: { cls: "ico-text", path: '<path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1z"/>' },
+        generic: { cls: "ico-generic", path: '<path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2z"/>' }
+    };
+    const EXT_ICON = {
+        pdf: "pdf", doc: "word", docx: "word", odt: "word",
+        xls: "excel", xlsx: "excel", ods: "excel", csv: "sheet",
+        ppt: "ppt", pptx: "ppt", odp: "ppt", zip: "zip",
+        png: "image", jpg: "image", jpeg: "image", webp: "image",
+        txt: "text", rtf: "text"
+    };
+    function fileIconSvg(extension) {
+        const ext = String(extension || "").toLowerCase().replace(/^\./, "");
+        const icon = ICONS[EXT_ICON[ext]] || ICONS.generic;
+        return `<svg class="file-icon-svg ${icon.cls}" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">${icon.path}</svg>`;
+    }
+    function humanizeTitle(file) {
+        const raw = String(file.title || "").trim();
+        const original = String(file.original_name || "");
+        const dotIndex = original.lastIndexOf(".");
+        const baseName = dotIndex > 0 ? original.slice(0, dotIndex) : original;
+        if (raw && raw !== baseName && raw !== original) return raw;
+        const source = raw || baseName || original;
+        return source
+            .replace(/[_-]+/g, " ")
+            .replace(/\s+/g, " ")
+            .trim() || source;
+    }
     const config = window.REPO_CONFIG || {};
     const API = String(config.API_URL || "").replace(/\/+$/, "");
     const state = { categories: [], files: [], adminFiles: [], token: sessionStorage.getItem("repo-admin-token") || "", selectedCategory: "", query: "" };
@@ -8,7 +43,7 @@
         publicView: $("#public-view"), adminView: $("#admin-view"), categories: $("#categories"), grid: $("#file-grid"), empty: $("#empty-state"),
         resultCount: $("#result-count"), catalogTitle: $("#catalog-title"), search: $("#search-input"), offlineNote: $("#offline-note"),
         loginCard: $("#login-card"), adminContent: $("#admin-content"), stats: $("#stats"), adminCategories: $("#admin-categories"),
-        uploadCategory: $("#upload-category"), adminFiles: $("#admin-files"), editDialog: $("#edit-dialog"), toast: $("#toast")
+        uploadCategory: $("#upload-category"), adminFiles: $("#admin-files"), adminFileCards: $("#admin-files-cards"), editDialog: $("#edit-dialog"), toast: $("#toast")
     };
     init();
     function init() {
@@ -51,6 +86,7 @@
      $("#file-input").addEventListener("change", showSelectedFile);
      setupDropZone();
      els.adminFiles.addEventListener("click", adminFileAction);
+     els.adminFileCards.addEventListener("click", adminFileAction);
      els.adminCategories.addEventListener("click", categoryAction);
      $("#edit-form").addEventListener("submit", saveEdit);
  }
@@ -114,9 +150,11 @@
      els.grid.hidden = state.files.length === 0;
      els.grid.innerHTML = state.files.map(file => {
          const preview = String(file.mime_type).startsWith("image/") || file.mime_type === "application/pdf";
+         const displayTitle = humanizeTitle(file);
+         const fullTitle = String(file.title || file.original_name || "");
          return `<article class="file-card">
-         <div class="file-top"><span class="file-icon">${esc(String(file.extension).toUpperCase())}</span><span class="file-tag">${esc(file.category_name)}</span></div>
-         <h3>${esc(file.title)}</h3><p class="file-description">${esc(file.description || "Material disponível para download.")}</p>
+         <div class="file-top"><span class="file-icon" title="${esc(String(file.extension).toUpperCase())}">${fileIconSvg(file.extension)}<b>${esc(String(file.extension).toUpperCase())}</b></span><span class="file-tag" title="${esc(file.category_name)}">${esc(file.category_name)}</span></div>
+         <h3 title="${esc(fullTitle)}" aria-label="${esc(fullTitle)}">${esc(displayTitle)}</h3><p class="file-description">${esc(file.description || "Material disponível para download.")}</p>
          <div class="file-meta"><span>${formatBytes(file.size_bytes)}</span><span>${formatDate(file.published_at || file.created_at)}</span><span>↓ ${Number(file.download_count || 0)}</span></div>
          <div class="file-actions">${preview ? `<a class="button button-ghost" href="${API}/api/public/files/${encodeURIComponent(file.id)}/preview" target="_blank" rel="noopener">Visualizar</a>` : ""}<a class="button button-primary" href="${API}/api/public/files/${encodeURIComponent(file.id)}/download">↓ Baixar</a></div>
          </article>`;
@@ -179,11 +217,18 @@
      state.adminFiles = data.files || [];
      const statusNames = { public: "Publicado", draft: "Rascunho", private: "Privado" };
      els.adminFiles.innerHTML = state.adminFiles.length ? state.adminFiles.map(file => `<tr>
-     <td><div class="table-file"><span class="mini-icon">${esc(String(file.extension).toUpperCase())}</span><span><strong>${esc(file.title)}</strong><small>${esc(file.original_name)}</small></span></div></td>
+     <td><div class="table-file"><span class="mini-icon" title="${esc(String(file.extension).toUpperCase())}">${fileIconSvg(file.extension)}</span><span><strong title="${esc(file.title)}">${esc(humanizeTitle(file))}</strong><small title="${esc(file.original_name)}">${esc(file.original_name)}</small></span></div></td>
      <td>${esc(file.category_name)}</td><td><span class="status status-${esc(file.visibility)}">${statusNames[file.visibility]}</span></td>
      <td>${formatBytes(file.size_bytes)}</td><td>${Number(file.download_count || 0)}</td>
      <td><div class="row-actions"><button class="button button-ghost button-small" data-edit-file="${esc(file.id)}">Editar</button><button class="button button-danger button-small" data-delete-file="${esc(file.id)}">Excluir</button></div></td>
      </tr>`).join("") : `<tr><td colspan="6">Nenhum arquivo cadastrado.</td></tr>`;
+     els.adminFileCards.innerHTML = state.adminFiles.length ? state.adminFiles.map(file => `<article class="file-row-card">
+     <div class="file-row-top"><span class="mini-icon" title="${esc(String(file.extension).toUpperCase())}">${fileIconSvg(file.extension)}</span>
+     <div class="file-row-info"><strong title="${esc(file.title)}">${esc(humanizeTitle(file))}</strong><small title="${esc(file.original_name)}">${esc(file.original_name)}</small></div>
+     <span class="status status-${esc(file.visibility)}">${statusNames[file.visibility]}</span></div>
+     <div class="file-row-meta"><span>${esc(file.category_name)}</span><span>${formatBytes(file.size_bytes)}</span><span>↓ ${Number(file.download_count || 0)}</span></div>
+     <div class="row-actions"><button class="button button-ghost button-small" data-edit-file="${esc(file.id)}">Editar</button><button class="button button-danger button-small" data-delete-file="${esc(file.id)}">Excluir</button></div>
+     </article>`).join("") : `<p class="empty-hint">Nenhum arquivo cadastrado.</p>`;
  }
 
  async function upload(event) {
