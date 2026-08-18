@@ -37,11 +37,11 @@
     }
     const config = window.REPO_CONFIG || {};
     const API = String(config.API_URL || "").replace(/\/+$/, "");
-    const state = { categories: [], files: [], adminFiles: [], token: sessionStorage.getItem("repo-admin-token") || "", selectedCategory: "", query: "" };
+    const state = { categories: [], files: [], adminFiles: [], token: sessionStorage.getItem("repo-admin-token") || "", selectedCategory: "", query: "", sort: "recent" };
     const $ = selector => document.querySelector(selector);
     const els = {
         publicView: $("#public-view"), adminView: $("#admin-view"), categories: $("#categories"), grid: $("#file-grid"), empty: $("#empty-state"),
-        resultCount: $("#result-count"), catalogTitle: $("#catalog-title"), search: $("#search-input"), offlineNote: $("#offline-note"),
+        resultCount: $("#result-count"), catalogTitle: $("#catalog-title"), search: $("#search-input"), offlineNote: $("#offline-note"), sortSelect: $("#sort-select"),
         loginCard: $("#login-card"), adminContent: $("#admin-content"), stats: $("#stats"), adminCategories: $("#admin-categories"),
         uploadCategory: $("#upload-category"), adminFiles: $("#admin-files"), adminFileCards: $("#admin-files-cards"), editDialog: $("#edit-dialog"), toast: $("#toast")
     };
@@ -71,6 +71,7 @@
      let timer;
      els.search.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => { state.query = els.search.value.trim(); loadPublicFiles(); }, 350); });
      $("#clear-filters").addEventListener("click", () => { state.selectedCategory = ""; state.query = ""; els.search.value = ""; renderCategories(); loadPublicFiles(); });
+     els.sortSelect.addEventListener("change", () => { state.sort = els.sortSelect.value; renderFiles(); });
      els.categories.addEventListener("click", event => {
          const button = event.target.closest("button[data-category]");
          if (!button) return;
@@ -142,21 +143,31 @@
      renderFiles();
  }
 
+ function sortedFiles() {
+     const files = state.files.slice();
+     if (state.sort === "downloads") files.sort((a, b) => Number(b.download_count || 0) - Number(a.download_count || 0));
+     else if (state.sort === "az") files.sort((a, b) => humanizeTitle(a).localeCompare(humanizeTitle(b), "pt-BR", { sensitivity: "base" }));
+     else files.sort((a, b) => new Date(b.published_at || b.created_at || 0) - new Date(a.published_at || a.created_at || 0));
+     return files;
+ }
+
  function renderFiles() {
      const selected = state.categories.find(category => category.id === state.selectedCategory);
      els.catalogTitle.textContent = selected ? selected.name : state.query ? `Resultados para “${state.query}”` : "Todos os arquivos";
      els.resultCount.textContent = `${state.files.length} ${state.files.length === 1 ? "arquivo" : "arquivos"}`;
      els.empty.hidden = state.files.length > 0;
      els.grid.hidden = state.files.length === 0;
-     els.grid.innerHTML = state.files.map(file => {
+     els.grid.innerHTML = sortedFiles().map(file => {
          const preview = String(file.mime_type).startsWith("image/") || file.mime_type === "application/pdf";
          const displayTitle = humanizeTitle(file);
          const fullTitle = String(file.title || file.original_name || "");
+         const downloadUrl = `${API}/api/public/files/${encodeURIComponent(file.id)}/download`;
+         const shareText = encodeURIComponent(`${displayTitle}\n${downloadUrl}`);
          return `<article class="file-card">
          <div class="file-top"><span class="file-icon" title="${esc(String(file.extension).toUpperCase())}">${fileIconSvg(file.extension)}<b>${esc(String(file.extension).toUpperCase())}</b></span><span class="file-tag" title="${esc(file.category_name)}">${esc(file.category_name)}</span></div>
          <h3 title="${esc(fullTitle)}" aria-label="${esc(fullTitle)}">${esc(displayTitle)}</h3><p class="file-description">${esc(file.description || "Material disponível para download.")}</p>
          <div class="file-meta"><span>${formatBytes(file.size_bytes)}</span><span>${formatDate(file.published_at || file.created_at)}</span><span>↓ ${Number(file.download_count || 0)}</span></div>
-         <div class="file-actions">${preview ? `<a class="button button-ghost" href="${API}/api/public/files/${encodeURIComponent(file.id)}/preview" target="_blank" rel="noopener">Visualizar</a>` : ""}<a class="button button-primary" href="${API}/api/public/files/${encodeURIComponent(file.id)}/download">↓ Baixar</a></div>
+         <div class="file-actions">${preview ? `<a class="button button-ghost" href="${API}/api/public/files/${encodeURIComponent(file.id)}/preview" target="_blank" rel="noopener">Visualizar</a>` : ""}<a class="button button-primary" href="${downloadUrl}">↓ Baixar</a><a class="button button-ghost button-whatsapp" href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener" aria-label="Compartilhar ${esc(displayTitle)} no WhatsApp" title="Compartilhar no WhatsApp"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="whatsapp-icon"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg></a></div>
          </article>`;
      }).join("");
  }
@@ -281,10 +292,10 @@
      const download = event.target.closest("button[data-download-file]");
      if (download) {
          const file = state.adminFiles.find(item => item.id === download.dataset.downloadFile); if (!file) return;
-         setBusy(download, true, "Baixando…");
+         setDownloadBusy(download, true);
          try { await downloadAdminFile(file); }
          catch (error) { toast(error.message, true); }
-         finally { setBusy(download, false, "↓ Baixar"); }
+         finally { setDownloadBusy(download, false); }
      }
      if (edit) {
          const file = state.adminFiles.find(item => item.id === edit.dataset.editFile); if (!file) return;
@@ -328,6 +339,10 @@
     function updateNetwork() { const online = navigator.onLine; const el = $("#network-status"); el.classList.toggle("offline", !online); el.querySelector("span").textContent = online ? "Online" : "Offline"; }
     function toast(message, error = false, duration = 4000) { clearTimeout(toast.timer); els.toast.textContent = message; els.toast.classList.toggle("error", error); els.toast.hidden = false; toast.timer = setTimeout(() => els.toast.hidden = true, duration); }
     function setBusy(button, busy, label) { button.disabled = busy; button.textContent = label; }
+    function setDownloadBusy(button, busy) {
+        button.disabled = busy;
+        button.innerHTML = busy ? '<span class="spinner" aria-hidden="true"></span><span>Baixando…</span>' : "↓ Baixar";
+    }
     function formatBytes(value) { const bytes = Number(value || 0); if (bytes < 1024) return `${bytes} B`; const units = ["KB", "MB", "GB"]; let size = bytes / 1024, unit = 0; while (size >= 1024 && unit < units.length - 1) { size /= 1024; unit++; } return `${size.toFixed(size >= 10 ? 1 : 2)} ${units[unit]}`; }
     function formatDate(value) { if (!value) return ""; const date = new Date(String(value).includes("T") ? value : `${String(value).replace(" ", "T")}Z`); return Number.isNaN(date.valueOf()) ? "" : date.toLocaleDateString("pt-BR"); }
     function readCache(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; } }
