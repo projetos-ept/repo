@@ -1,0 +1,29 @@
+{
+    "$schema": "./node_modules/wrangler/config-schema.json",
+    "name": "repositorio-api",
+    "main": "worker/index.ts",
+    "compatibility_date": "2026-08-17",
+    "workers_dev": true,
+    "vars": {
+          "ADMIN_EMAIL": "lucas.batista.eduk@gmail.com",
+          "ALLOWED_ORIGINS": "https://projetos-ept.github.io",
+          "MAX_FILE_MB": "50"
+    },
+    "secrets": {
+          "required": ["ADMIN_PASSWORD", "SESSION_SECRET"]
+    },
+    "d1_databases": [
+          {
+                  "binding": "DB",
+                  "database_name": "repositorio-db",
+                  "database_id": "0e3541c4-6303-4adc-b460-d3ba006c9ea7",
+                  "migrations_dir": "migrations"
+          }
+    ],
+    "r2_buckets": [
+          {
+                  "binding": "FILES",
+                  "bucket_name": "repositorio-arquivos"
+          }
+    ]
+}
