@@ -1,0 +1,2 @@
+ADMIN_PASSWORD="troque-por-uma-senha-longa"
+SESSION_SECRET="gere-uma-chave-aleatoria-com-pelo-menos-32-caracteres"
