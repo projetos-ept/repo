@@ -26,9 +26,9 @@
           <span><strong id="site-name">Repositório</strong><small id="site-subtitle">Documentos e materiais</small></span>
     </a>
     <nav class="header-actions" aria-label="Ações">
-      <span id="network-status" class="network-status"><i></i><span>Online</span></span>
+      <span id="network-status" class="network-status"><i aria-hidden="true"></i><span class="network-status-label">Online</span></span>
           <button id="theme-button" class="icon-button" type="button" aria-label="Alternar tema" title="Alternar tema">☾</button>
-      <a id="admin-link" class="button button-ghost" href="#/admin">🔒 Administração</a>
+      <a id="admin-link" class="button button-ghost" href="#/admin" aria-label="Administração" title="Administração"><span aria-hidden="true">🔒</span><span class="admin-link-label">Administração</span></a>
         </nav>
       </header>
 
@@ -110,6 +110,7 @@
               <select id="admin-file-filter" aria-label="Filtrar arquivos"><option value="">Todos</option><option value="public">Publicados</option><option value="draft">Rascunhos</option><option value="private">Privados</option></select>
                 </div>
                 <div class="table-scroll"><table><thead><tr><th>Arquivo</th><th>Categoria</th><th>Status</th><th>Tamanho</th><th>Downloads</th><th>Ações</th></tr></thead><tbody id="admin-files"></tbody></table></div>
+                <div id="admin-files-cards" class="file-row-cards"></div>
               </section>
             </div>
 
