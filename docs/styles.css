@@ -156,6 +156,11 @@ dialog form{padding:1.4rem}
 .dialog-heading,.dialog-actions{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
 .dialog-heading h2{margin:0}
 .dialog-actions{justify-content:flex-end;margin-top:1rem}
+.preview-dialog{width:min(90vw,900px);max-height:min(90dvh,900px);padding:0;overflow:hidden}
+.preview-heading{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.85rem 1rem;border-bottom:1px solid var(--line)}
+.preview-heading strong{overflow-wrap:anywhere;word-break:break-word;font-size:.95rem}
+.preview-body{display:grid;place-items:center;max-height:calc(min(90dvh,900px) - 60px);overflow:auto;background:color-mix(in srgb,var(--surface-2) 60%,#000 4%);padding:.5rem}
+.preview-body img{max-width:100%;max-height:calc(90dvh - 100px);display:block;border-radius:8px}
 .toast{position:fixed;z-index:100;left:50%;bottom:24px;transform:translateX(-50%);background:#142037;color:#fff;border-radius:11px;padding:.85rem 1rem;box-shadow:0 12px 40px rgba(0,0,0,.3);max-width:min(480px,calc(100% - 2rem));text-align:center}
 .toast.error{background:#8f2029}
 footer{display:flex;justify-content:space-between;gap:1rem;padding:28px max(24px,calc((100vw - 1320px)/2));background:var(--surface);border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
