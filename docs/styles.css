@@ -133,7 +133,7 @@ th{color:var(--muted);text-transform:uppercase;font-size:.68rem;letter-spacing:.
 .status-public{background:color-mix(in srgb,var(--success) 13%,var(--surface));color:var(--success)}
 .status-draft{background:color-mix(in srgb,var(--warning) 14%,var(--surface));color:var(--warning)}
 .status-private{background:var(--surface-2);color:var(--muted)}
-.row-actions{display:flex;gap:.35rem}
+.row-actions{display:flex;flex-wrap:wrap;gap:.35rem}
 .login-card{max-width:440px;margin:70px auto;text-align:left}
 .login-card h2,.login-card>p{text-align:center}
 .login-card>p{color:var(--muted);line-height:1.5}

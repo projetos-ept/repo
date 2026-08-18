@@ -227,7 +227,7 @@
      <div class="file-row-info"><strong title="${esc(file.title)}">${esc(humanizeTitle(file))}</strong><small title="${esc(file.original_name)}">${esc(file.original_name)}</small></div>
      <span class="status status-${esc(file.visibility)}">${statusNames[file.visibility]}</span></div>
      <div class="file-row-meta"><span>${esc(file.category_name)}</span><span>${formatBytes(file.size_bytes)}</span><span>↓ ${Number(file.download_count || 0)}</span></div>
-     <div class="row-actions"><button class="button button-ghost button-small" data-edit-file="${esc(file.id)}">Editar</button><button class="button button-danger button-small" data-delete-file="${esc(file.id)}">Excluir</button></div>
+     <div class="row-actions"><button class="button button-ghost button-small" data-download-file="${esc(file.id)}" title="Baixar arquivo original" aria-label="Baixar ${esc(file.original_name)}">↓ Baixar</button><button class="button button-ghost button-small" data-edit-file="${esc(file.id)}">Editar</button><button class="button button-danger button-small" data-delete-file="${esc(file.id)}">Excluir</button></div>
      </article>`).join("") : `<p class="empty-hint">Nenhum arquivo cadastrado.</p>`;
  }
 
@@ -251,6 +251,17 @@
      });
  }
 
+ async function downloadAdminFile(file) {
+     const response = await fetch(`${API}/api/admin/files/${encodeURIComponent(file.id)}/download`, { headers: { Authorization: `Bearer ${state.token}` } });
+     if (!response.ok) { const data = await response.json().catch(() => ({})); throw new Error(data.error || `Erro ${response.status}`); }
+     const blob = await response.blob();
+     const url = URL.createObjectURL(blob);
+     const link = document.createElement("a");
+     link.href = url; link.download = file.original_name || file.title;
+     document.body.appendChild(link); link.click(); link.remove();
+     URL.revokeObjectURL(url);
+ }
+
  async function createCategory(event) {
      event.preventDefault(); const form = event.currentTarget; const button = form.querySelector("button");
      setBusy(button, true, "Salvando…");
@@ -267,6 +278,14 @@
 
  async function adminFileAction(event) {
      const edit = event.target.closest("button[data-edit-file]"); const remove = event.target.closest("button[data-delete-file]");
+     const download = event.target.closest("button[data-download-file]");
+     if (download) {
+         const file = state.adminFiles.find(item => item.id === download.dataset.downloadFile); if (!file) return;
+         setBusy(download, true, "Baixando…");
+         try { await downloadAdminFile(file); }
+         catch (error) { toast(error.message, true); }
+         finally { setBusy(download, false, "↓ Baixar"); }
+     }
      if (edit) {
          const file = state.adminFiles.find(item => item.id === edit.dataset.editFile); if (!file) return;
          const form = $("#edit-form"); form.elements.id.value = file.id; form.elements.title.value = file.title; form.elements.description.value = file.description || "";
