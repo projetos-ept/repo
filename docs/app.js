@@ -197,6 +197,7 @@
          const shareMessage = `📄 *${displayTitle}*\n${file.category_name ? `Categoria: ${file.category_name}\n` : ""}Disponível para consulta e download no ${siteName}:\n${deepLink}`;
          const shareText = encodeURIComponent(shareMessage);
          return `<article class="file-card" data-file-id="${esc(file.id)}">
+         ${isImage ? `<button type="button" class="file-thumb" data-preview-image="${esc(previewUrl)}" data-preview-title="${esc(displayTitle)}" aria-label="Ampliar ${esc(displayTitle)}"><img src="${esc(previewUrl)}" alt="" loading="lazy" decoding="async"></button>` : ""}
          <div class="file-top"><span class="file-icon" title="${esc(String(file.extension).toUpperCase())}">${fileIconSvg(file.extension)}<b>${esc(String(file.extension).toUpperCase())}</b></span><span class="file-tag" title="${esc(file.category_name)}">${esc(file.category_name)}</span></div>
          <h3 title="${esc(fullTitle)}" aria-label="${esc(fullTitle)}">${esc(displayTitle)}</h3><p class="file-description">${esc(file.description || "Material disponível para download.")}</p>
          <div class="file-meta"><span>${formatBytes(file.size_bytes)}</span><span>${formatDate(file.published_at || file.created_at)}</span></div>
