@@ -49,8 +49,14 @@
 
           <div class="page-shell public-layout">
             <aside class="categories-panel" aria-label="Categorias">
-              <div class="panel-title"><span>Categorias</span><button id="clear-filters" type="button" class="text-button">Limpar</button></div>
-              <div id="categories" class="category-list"><div class="skeleton line"></div><div class="skeleton line"></div></div>
+              <button id="categories-toggle" class="categories-toggle" type="button" aria-expanded="false" aria-controls="categories-collapse">
+                <span>Categoria: <strong id="categories-toggle-label">Todos os arquivos</strong></span>
+                <svg class="chevron" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/></svg>
+              </button>
+              <div id="categories-collapse" class="categories-collapse">
+                <div class="panel-title"><span>Categorias</span><button id="clear-filters" type="button" class="text-button">Limpar</button></div>
+                <div id="categories" class="category-list"><div class="skeleton line"></div><div class="skeleton line"></div></div>
+              </div>
             </aside>
 
             <section class="catalog">
