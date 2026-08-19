@@ -1,4 +1,4 @@
-const CACHE = "repositorio-pwa-v8";
+const CACHE = "repositorio-pwa-v9";
 const APP_SHELL = ["./", "./index.html", "./styles.css", "./app.js", "./config.js", "./manifest.webmanifest", "./icons/icon.svg"];
 
 self.addEventListener("install", event => {

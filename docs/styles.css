@@ -51,6 +51,8 @@ a{color:inherit}
 .category-button:hover,.category-button.active{background:var(--surface-2);color:var(--primary);font-weight:700}
 .category-button b{font-size:.75rem;background:var(--surface-2);padding:.15rem .45rem;border-radius:999px}
 .category-button.active b{background:var(--surface)}
+.categories-toggle{display:none}
+.categories-collapse{display:block}
 .section-heading{margin-bottom:1.3rem}
 .section-heading h2,.admin-heading h1{margin:0;font-size:1.8rem;letter-spacing:-.025em}
 .count-pill{padding:.4rem .7rem;border-radius:999px;background:var(--surface-2);color:var(--muted);font-size:.82rem;white-space:nowrap}
@@ -186,9 +188,16 @@ footer{display:flex;justify-content:space-between;gap:1rem;padding:28px max(24px
   .search .button{grid-column:1;width:100%;min-height:44px}
   .page-shell,.admin-shell{padding:18px 12px 40px}
   .public-layout{grid-template-columns:minmax(0,1fr);gap:14px}
-  .categories-panel{position:static;max-height:none;padding:.6rem}
+  .categories-panel{position:static;max-height:none;padding:0;box-shadow:none;border:0;background:transparent}
+  .categories-toggle{display:flex;align-items:center;justify-content:space-between;gap:.6rem;width:100%;min-height:48px;padding:.75rem 1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);cursor:pointer;font-weight:700;font-size:.88rem}
+  .categories-toggle span{color:var(--muted);font-weight:400}
+  .categories-toggle strong{color:var(--text);font-weight:700;margin-left:.3rem}
+  .categories-toggle .chevron{width:16px;height:16px;flex:0 0 auto;transition:transform .2s}
+  .categories-panel.open .categories-toggle .chevron{transform:rotate(180deg)}
+  .categories-collapse{display:none;margin-top:.5rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.6rem;box-shadow:var(--shadow)}
+  .categories-panel.open .categories-collapse{display:block}
   .panel-title{padding:.3rem .3rem .5rem}
-  .category-list{display:flex;overflow-x:auto;gap:.4rem;padding-bottom:.2rem;-webkit-overflow-scrolling:touch}
+  .category-list{display:flex;flex-wrap:wrap;gap:.4rem}
   .category-button{width:auto;flex:0 0 auto;white-space:nowrap;gap:.5rem;min-height:44px;padding:.6rem .9rem}
   .file-grid{grid-template-columns:minmax(0,1fr)}
   .file-card{width:100%;min-height:0}

@@ -45,7 +45,8 @@
         resultCount: $("#result-count"), catalogTitle: $("#catalog-title"), search: $("#search-input"), offlineNote: $("#offline-note"), sortSelect: $("#sort-select"),
         loginCard: $("#login-card"), adminContent: $("#admin-content"), stats: $("#stats"), adminCategories: $("#admin-categories"),
         uploadCategory: $("#upload-category"), adminFiles: $("#admin-files"), adminFileCards: $("#admin-files-cards"), editDialog: $("#edit-dialog"), toast: $("#toast"),
-        imagePreviewDialog: $("#image-preview-dialog"), imagePreviewImg: $("#image-preview-img"), imagePreviewTitle: $("#image-preview-title")
+        imagePreviewDialog: $("#image-preview-dialog"), imagePreviewImg: $("#image-preview-img"), imagePreviewTitle: $("#image-preview-title"),
+        categoriesToggle: $("#categories-toggle"), categoriesToggleLabel: $("#categories-toggle-label"), categoriesPanel: $(".categories-panel")
     };
     init();
     function init() {
@@ -71,13 +72,17 @@
      $("#search-form").addEventListener("submit", event => { event.preventDefault(); state.query = els.search.value.trim(); loadPublicFiles(); });
      let timer;
      els.search.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => { state.query = els.search.value.trim(); loadPublicFiles(); }, 350); });
-     $("#clear-filters").addEventListener("click", () => { state.selectedCategory = ""; state.query = ""; els.search.value = ""; renderCategories(); loadPublicFiles(); });
+     $("#clear-filters").addEventListener("click", () => { state.selectedCategory = ""; state.query = ""; els.search.value = ""; renderCategories(); loadPublicFiles(); collapseCategories(); });
      els.sortSelect.addEventListener("change", () => { state.sort = els.sortSelect.value; renderFiles(); });
      els.categories.addEventListener("click", event => {
          const button = event.target.closest("button[data-category]");
          if (!button) return;
          state.selectedCategory = button.dataset.category;
-         renderCategories(); loadPublicFiles();
+         renderCategories(); loadPublicFiles(); collapseCategories();
+     });
+     els.categoriesToggle.addEventListener("click", () => {
+         const open = els.categoriesPanel.classList.toggle("open");
+         els.categoriesToggle.setAttribute("aria-expanded", String(open));
      });
      els.grid.addEventListener("click", event => {
          const button = event.target.closest("button[data-preview-image]");
@@ -153,6 +158,13 @@
      els.categories.innerHTML = `
      <button class="category-button ${state.selectedCategory ? "" : "active"}" data-category=""><span>Todos os arquivos</span><b>${total}</b></button>
      ${state.categories.map(category => `<button class="category-button ${state.selectedCategory === category.id ? "active" : ""}" data-category="${esc(category.id)}"><span>${esc(category.name)}</span><b>${Number(category.file_count || 0)}</b></button>`).join("")}`;
+     const selected = state.categories.find(category => category.id === state.selectedCategory);
+     els.categoriesToggleLabel.textContent = selected ? selected.name : "Todos os arquivos";
+ }
+
+ function collapseCategories() {
+     els.categoriesPanel.classList.remove("open");
+     els.categoriesToggle.setAttribute("aria-expanded", "false");
  }
 
  async function loadPublicFiles() {
