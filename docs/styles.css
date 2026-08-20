@@ -60,6 +60,7 @@ a{color:inherit}
 label.sort-control{display:flex;align-items:center;gap:.4rem;margin:0;color:var(--muted);font-size:.78rem;font-weight:700}
 label.sort-control select{width:auto;min-height:38px;padding:.4rem .55rem;font-size:.82rem}
 .button-whatsapp{flex:0 0 auto;width:42px;padding:0;color:#25d366;border-color:var(--line)}
+.button-whatsapp.button-small{width:34px;min-height:34px}
 .button-whatsapp:hover{background:color-mix(in srgb,#25d366 14%,var(--surface))}
 .whatsapp-icon{width:18px;height:18px}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:.4rem}

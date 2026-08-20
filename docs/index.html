@@ -104,7 +104,7 @@
                       <label>Categoria<select id="upload-category" name="category_id" required></select></label>
                     </div>
                     <label>Descrição<textarea name="description" rows="3" maxlength="1000" placeholder="Breve descrição do material"></textarea></label>
-                    <label>Visibilidade<select name="visibility"><option value="draft">Rascunho</option><option value="public">Publicado</option><option value="private">Privado</option></select></label>
+                    <label>Visibilidade<select name="visibility"><option value="draft">Rascunho</option><option value="public">Publicado</option><option value="private">Não listado (só por link)</option></select></label>
                     <div id="upload-progress" class="progress" hidden><span></span></div>
                     <button class="button button-primary" type="submit">Enviar arquivo</button>
                   </form>
@@ -120,7 +120,7 @@
               <section class="panel files-panel">
                 <div class="panel-heading">
                   <div><h2>Arquivos cadastrados</h2><p>Altere a publicação ou remova arquivos.</p></div>
-              <select id="admin-file-filter" aria-label="Filtrar arquivos"><option value="">Todos</option><option value="public">Publicados</option><option value="draft">Rascunhos</option><option value="private">Privados</option></select>
+              <select id="admin-file-filter" aria-label="Filtrar arquivos"><option value="">Todos</option><option value="public">Publicados</option><option value="draft">Rascunhos</option><option value="private">Não listados</option></select>
                 </div>
                 <div class="table-scroll"><table><thead><tr><th>Arquivo</th><th>Categoria</th><th>Status</th><th>Tamanho</th><th>Downloads</th><th>Ações</th></tr></thead><tbody id="admin-files"></tbody></table></div>
                 <div id="admin-files-cards" class="file-row-cards"></div>
@@ -150,7 +150,7 @@
           <label>Título<input name="title" required maxlength="160"></label>
           <label>Descrição<textarea name="description" rows="4" maxlength="1000"></textarea></label>
           <label>Categoria<select name="category_id" required></select></label>
-          <label>Visibilidade<select name="visibility"><option value="draft">Rascunho</option><option value="public">Publicado</option><option value="private">Privado</option></select></label>
+          <label>Visibilidade<select name="visibility"><option value="draft">Rascunho</option><option value="public">Publicado</option><option value="private">Não listado (só por link)</option></select></label>
           <div class="dialog-actions"><button class="button button-ghost" value="cancel">Cancelar</button><button id="save-edit" class="button button-primary" value="default">Salvar alterações</button></div>
         </form>
       </dialog>

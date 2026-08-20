@@ -334,7 +334,7 @@ async function deleteFile(id: string, env: Env, cors: HeadersInit): Promise<Resp
 async function deliverFile(id: string, preview: boolean, admin: boolean, env: Env, ctx: ExecutionContext, cors: HeadersInit): Promise<Response> {
   const sql = admin
   ? "SELECT * FROM files WHERE id = ?"
-    : "SELECT * FROM files WHERE id = ? AND visibility = 'public'";
+    : "SELECT * FROM files WHERE id = ? AND visibility IN ('public', 'private')";
   const file = await env.DB.prepare(sql).bind(id).first<Record<string, unknown>>();
   if (!file) return json({ error: "Arquivo não encontrado." }, 404, cors);
   const canPreview = String(file.mime_type) === "application/pdf" || String(file.mime_type).startsWith("image/");
