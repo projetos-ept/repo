@@ -52,7 +52,8 @@
         loginCard: $("#login-card"), adminContent: $("#admin-content"), stats: $("#stats"), adminCategories: $("#admin-categories"),
         uploadCategory: $("#upload-category"), adminFiles: $("#admin-files"), adminFileCards: $("#admin-files-cards"), editDialog: $("#edit-dialog"), toast: $("#toast"),
         imagePreviewDialog: $("#image-preview-dialog"), imagePreviewImg: $("#image-preview-img"), imagePreviewTitle: $("#image-preview-title"),
-        categoriesToggle: $("#categories-toggle"), categoriesToggleLabel: $("#categories-toggle-label"), categoriesPanel: $(".categories-panel")
+        categoriesToggle: $("#categories-toggle"), categoriesToggleLabel: $("#categories-toggle-label"), categoriesPanel: $(".categories-panel"),
+        adminCategoryFilter: $("#admin-category-filter"), adminFileSearch: $("#admin-file-search")
     };
     init();
     function init() {
@@ -103,6 +104,9 @@
      $("#upload-form").addEventListener("submit", upload);
      $("#category-form").addEventListener("submit", createCategory);
      $("#admin-file-filter").addEventListener("change", loadAdminFiles);
+     els.adminCategoryFilter.addEventListener("change", renderAdminFiles);
+     let adminSearchTimer;
+     els.adminFileSearch.addEventListener("input", () => { clearTimeout(adminSearchTimer); adminSearchTimer = setTimeout(renderAdminFiles, 250); });
      $("#print-report").addEventListener("click", () => print());
      $("#file-input").addEventListener("change", showSelectedFile);
      setupDropZone();
@@ -280,26 +284,43 @@
      const options = state.categories.map(category => `<option value="${esc(category.id)}">${esc(category.name)}</option>`).join("");
      els.uploadCategory.innerHTML = options;
      $("#edit-form select[name=category_id]").innerHTML = options;
+     const currentCategoryFilter = els.adminCategoryFilter.value;
+     els.adminCategoryFilter.innerHTML = `<option value="">Todas as categorias</option>${options}`;
+     els.adminCategoryFilter.value = currentCategoryFilter;
  }
 
  async function loadAdminFiles() {
      const filter = $("#admin-file-filter").value;
      const data = await api(`/api/admin/files${filter ? `?visibility=${filter}` : ""}`, { auth: true });
      state.adminFiles = data.files || [];
+     renderAdminFiles();
+ }
+
+ function renderAdminFiles() {
+     const categoryFilter = els.adminCategoryFilter.value;
+     const query = els.adminFileSearch.value.trim().toLowerCase();
+     const files = state.adminFiles.filter(file => {
+         if (categoryFilter && file.category_id !== categoryFilter) return false;
+         if (query) {
+             const haystack = `${file.title} ${file.original_name} ${humanizeTitle(file)}`.toLowerCase();
+             if (!haystack.includes(query)) return false;
+         }
+         return true;
+     });
      const statusNames = { public: "Publicado", draft: "Rascunho", private: "Não listado" };
-     els.adminFiles.innerHTML = state.adminFiles.length ? state.adminFiles.map(file => `<tr>
+     els.adminFiles.innerHTML = files.length ? files.map(file => `<tr>
      <td><div class="table-file"><span class="mini-icon" title="${esc(String(file.extension).toUpperCase())}">${fileIconSvg(file.extension)}</span><span><strong title="${esc(file.title)}">${esc(humanizeTitle(file))}</strong><small title="${esc(file.original_name)}">${esc(file.original_name)}</small></span></div></td>
      <td>${esc(file.category_name)}</td><td><span class="status status-${esc(file.visibility)}">${statusNames[file.visibility]}</span></td>
      <td>${formatBytes(file.size_bytes)}</td><td>${Number(file.download_count || 0)}</td>
      <td><div class="row-actions"><button class="button button-ghost button-small" data-download-file="${esc(file.id)}" title="Baixar arquivo original" aria-label="Baixar ${esc(file.original_name)}">↓ Baixar</button>${whatsappShareButton(file.id, humanizeTitle(file), file.category_name, "button-small")}<button class="button button-ghost button-small" data-edit-file="${esc(file.id)}">Editar</button><button class="button button-danger button-small" data-delete-file="${esc(file.id)}">Excluir</button></div></td>
-     </tr>`).join("") : `<tr><td colspan="6">Nenhum arquivo cadastrado.</td></tr>`;
-     els.adminFileCards.innerHTML = state.adminFiles.length ? state.adminFiles.map(file => `<article class="file-row-card">
+     </tr>`).join("") : `<tr><td colspan="6">Nenhum arquivo encontrado.</td></tr>`;
+     els.adminFileCards.innerHTML = files.length ? files.map(file => `<article class="file-row-card">
      <div class="file-row-top"><span class="mini-icon" title="${esc(String(file.extension).toUpperCase())}">${fileIconSvg(file.extension)}</span>
      <div class="file-row-info"><strong title="${esc(file.title)}">${esc(humanizeTitle(file))}</strong><small title="${esc(file.original_name)}">${esc(file.original_name)}</small></div>
      <span class="status status-${esc(file.visibility)}">${statusNames[file.visibility]}</span></div>
      <div class="file-row-meta"><span>${esc(file.category_name)}</span><span>${formatBytes(file.size_bytes)}</span><span>↓ ${Number(file.download_count || 0)}</span></div>
      <div class="row-actions"><button class="button button-ghost button-small" data-download-file="${esc(file.id)}" title="Baixar arquivo original" aria-label="Baixar ${esc(file.original_name)}">↓ Baixar</button>${whatsappShareButton(file.id, humanizeTitle(file), file.category_name, "button-small")}<button class="button button-ghost button-small" data-edit-file="${esc(file.id)}">Editar</button><button class="button button-danger button-small" data-delete-file="${esc(file.id)}">Excluir</button></div>
-     </article>`).join("") : `<p class="empty-hint">Nenhum arquivo cadastrado.</p>`;
+     </article>`).join("") : `<p class="empty-hint">Nenhum arquivo encontrado.</p>`;
  }
 
  async function upload(event) {
