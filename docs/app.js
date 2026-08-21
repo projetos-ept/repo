@@ -327,8 +327,9 @@
      event.preventDefault(); const form = event.currentTarget; const button = form.querySelector("button[type=submit]");
      const data = new FormData(form); const file = data.get("file");
      if (!(file instanceof File) || !file.size) return toast("Selecione um arquivo.", true);
+     setBusy(button, true, "Verificando…");
      try { await file.slice(0, 1).arrayBuffer(); }
-     catch { return toast("Não foi possível ler o arquivo. Feche-o em outros programas (Word, Excel etc.) e tente novamente.", true, 7000); }
+     catch { setBusy(button, false, "Enviar arquivo"); return toast("Não foi possível ler o arquivo. Feche-o em outros programas (Word, Excel etc.) e tente novamente.", true, 7000); }
      setBusy(button, true, "Enviando…"); $("#upload-progress").hidden = false;
      try {
          await uploadWithProgress(data); form.reset(); showSelectedFile(); toast("Arquivo enviado com sucesso.");
